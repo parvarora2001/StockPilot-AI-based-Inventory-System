@@ -1,0 +1,14 @@
+{
+  "hooks": {
+    "SessionEnd": [
+      {
+        "hooks": [
+          {
+            "type": "command",
+            "command": "echo '{\"systemMessage\": \"Session ending — review CLAUDE.md at /Users/parvarora/Downloads/inventory-ai-2/CLAUDE.md and update if commands, architecture, or workflows changed this session.\"}'"
+          }
+        ]
+      }
+    ]
+  }
+}
