@@ -9,7 +9,7 @@ A full-stack inventory management dashboard with ML-powered demand forecasting a
 ## Features
 
 - **Real-time inventory dashboard** — stock levels, days-of-stock, and reorder status for 10 products across 4 risk tiers (Critical / Warning / Overstock / Healthy)
-- **ML demand forecasting** — ensemble of linear regression + 14-day moving average with a confidence band; selectable horizon of 14, 30, 60, or 90 days
+- **ML demand forecasting** — Holt-Winters exponential smoothing (level + trend + 7-day seasonality) with residual-based confidence bands and anomaly detection; selectable horizon of 14, 30, 60, or 90 days
 - **AI alerts** — per-product plain-English recommendations powered by Google Gemini; falls back to template-based alerts in demo mode so the app is fully functional without an API key
 - **Dark-mode UI** — built with React + Recharts, no CSS framework
 
