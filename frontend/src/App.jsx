@@ -103,6 +103,23 @@ function ErrorBanner({ message }) {
   );
 }
 
+function WakingBanner() {
+  return (
+    <div style={{
+      background: T.amber + "18", border: `1px solid ${T.amber}`,
+      borderRadius: 10, padding: "12px 18px",
+      color: T.amber, fontSize: 13, marginBottom: 20,
+      display: "flex", alignItems: "center", gap: 10,
+    }}>
+      <span style={{ fontSize: 16 }}>⏳</span>
+      <div>
+        <b>Backend is waking up from idle.</b>{" "}
+        <span style={{ color: T.dim }}>First load takes up to 30 seconds on the free Render tier — subsequent requests are instant.</span>
+      </div>
+    </div>
+  );
+}
+
 function Skeleton({ height = 80, style = {} }) {
   return (
     <div style={{
@@ -116,7 +133,21 @@ function Skeleton({ height = 80, style = {} }) {
   );
 }
 
-const shimmerStyle = `@keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }`;
+const globalStyles = `
+  @keyframes shimmer { 0%{background-position:200% 0} 100%{background-position:-200% 0} }
+  @media (max-width: 768px) {
+    .sp-container  { padding: 16px !important; max-width: 100% !important; }
+    .sp-header     { padding: 0 16px !important; }
+    .sp-kpi-grid   { grid-template-columns: repeat(2, 1fr) !important; }
+    .sp-forecast-grid { grid-template-columns: 1fr !important; }
+    .sp-product-list { max-height: 220px; overflow-y: auto; }
+  }
+  @media (max-width: 480px) {
+    .sp-kpi-grid    { grid-template-columns: 1fr !important; }
+    .sp-header-nav button { padding: 6px 10px !important; font-size: 12px !important; }
+  }
+`;
+const shimmerStyle = globalStyles;
 
 
 // ── Dashboard tab ─────────────────────────────────────────────────────────────
@@ -135,7 +166,7 @@ function DashboardTab({ summary, inventory, datasetInfo, onViewForecast, initial
       <>
         <style>{shimmerStyle}</style>
         <Skeleton height={46} style={{ marginBottom: 24 }} />
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 24 }}>
+        <div className="sp-kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 24 }}>
           {[0, 1, 2, 3].map(i => <Skeleton key={i} height={82} />)}
         </div>
         <Skeleton height={380} style={{ marginBottom: 20 }} />
@@ -170,7 +201,7 @@ function DashboardTab({ summary, inventory, datasetInfo, onViewForecast, initial
       )}
 
       {summary && (
-        <div style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 24 }}>
+        <div className="sp-kpi-grid" style={{ display: "grid", gridTemplateColumns: "repeat(4,1fr)", gap: 16, marginBottom: 24 }}>
           <KpiCard label="Critical"  value={summary.critical}  color={T.red}   icon="⚠" />
           <KpiCard label="Warning"   value={summary.warning}   color={T.amber} icon="◈" />
           <KpiCard label="Overstock" value={summary.overstock} color={T.blue}  icon="↑" />
@@ -288,7 +319,7 @@ function ForecastTab({ inventory, selectedId, onSelect, onChangeDays, forecastDa
   ] : [];
 
   return (
-    <div style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 20 }}>
+    <div className="sp-forecast-grid" style={{ display: "grid", gridTemplateColumns: "260px 1fr", gap: 20 }}>
       {/* Product list */}
       <Card style={{ padding: "16px" }}>
         <h3 style={{ margin: "0 0 14px", fontSize: 11, color: T.muted, textTransform: "uppercase", letterSpacing: "0.07em" }}>
@@ -531,19 +562,26 @@ export default function App() {
   const [selectedId,     setSelectedId]     = useState(null);
   const [forecastDays,   setForecastDays]   = useState(30);
   const [initialLoading, setInitialLoading] = useState(true);
+  const [coldStart,      setColdStart]      = useState(false);
   const [loadingAlerts,  setLoadingAlerts]  = useState(false);
   const [loadingFcast,   setLoadingFcast]   = useState(false);
   const [error,          setError]          = useState(null);
 
   useEffect(() => {
+    // Show "waking up" banner if backend hasn't responded within 3 seconds.
+    const wakeTimer = setTimeout(() => setColdStart(true), 3000);
     Promise.all([fetchSummary(), fetchInventory(), fetchDatasetInfo()])
       .then(([s, inv, ds]) => {
         setSummary(s);
         setInventory(inv.data);
         setDatasetInfo(ds);
       })
-      .catch(() => setError("Cannot reach the backend. Is FastAPI running on port 8000?"))
-      .finally(() => setInitialLoading(false));
+      .catch((e) => setError(e.message || "Cannot reach the backend. Is FastAPI running on port 8000?"))
+      .finally(() => {
+        clearTimeout(wakeTimer);
+        setColdStart(false);
+        setInitialLoading(false);
+      });
   }, []);
 
   const handleSelectProduct = useCallback(async (id, days = forecastDays) => {
@@ -589,7 +627,7 @@ export default function App() {
       <link href="https://fonts.googleapis.com/css2?family=Syne:wght@700;800&family=DM+Sans:wght@400;500;600&display=swap" rel="stylesheet" />
 
       {/* ── Header ── */}
-      <div style={{
+      <div className="sp-header" style={{
         borderBottom: `1px solid ${T.border}`,
         background: T.card, height: 58,
         display: "flex", alignItems: "center",
@@ -608,7 +646,7 @@ export default function App() {
           <Chip label="v1.0" color={T.muted} bg={T.border + "66"} />
         </div>
 
-        <nav style={{ display: "flex", gap: 4 }}>
+        <nav className="sp-header-nav" style={{ display: "flex", gap: 4 }}>
           {["dashboard", "forecast", "alerts"].map(t => (
             <button key={t} onClick={() => setTab(t)} style={{
               background: tab === t ? T.amber + "18" : "transparent",
@@ -623,8 +661,9 @@ export default function App() {
       </div>
 
       {/* ── Page content ── */}
-      <div style={{ maxWidth: 1260, margin: "0 auto", padding: "28px 32px" }}>
+      <div className="sp-container" style={{ maxWidth: 1260, margin: "0 auto", padding: "28px 32px" }}>
         {error && <ErrorBanner message={error} />}
+        {coldStart && initialLoading && <WakingBanner />}
 
         {tab === "dashboard" && (
           <DashboardTab
@@ -656,6 +695,27 @@ export default function App() {
           />
         )}
       </div>
+
+      {/* ── Footer ── */}
+      <footer style={{
+        borderTop: `1px solid ${T.border}`,
+        padding: "20px 32px 28px",
+        textAlign: "center",
+        color: T.muted,
+        fontSize: 12,
+        marginTop: 40,
+      }}>
+        Built by{" "}
+        <a href="https://github.com/parvarora2001" target="_blank" rel="noreferrer"
+           style={{ color: T.amber, textDecoration: "none" }}>
+          Parv Arora
+        </a>
+        {" · "}
+        <a href="https://github.com/parvarora2001/StockPilot-AI-based-Inventory-System" target="_blank" rel="noreferrer"
+           style={{ color: T.amber, textDecoration: "none" }}>
+          Source on GitHub ↗
+        </a>
+      </footer>
     </div>
   );
 }
