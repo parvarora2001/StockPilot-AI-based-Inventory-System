@@ -55,8 +55,7 @@ def _demo_message(item: dict, days: float, severity: str, trend: str, units: int
 
 
 # ── Live mode: Gemini via Google AI Studio ───────────────────────────────────
-# All 10 products are sent in a single batched call. Gemini free tier limit is
-# 5 req/min, so per-product calls (the previous design) hit 429 immediately.
+
 
 def _batch_ai_messages(client, contexts: list[dict]) -> dict[str, str]:
     """One Gemini call → dict mapping product_id to a 2-sentence alert. Empty dict on failure."""
