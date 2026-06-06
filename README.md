@@ -2,7 +2,7 @@
 
 A full-stack inventory management dashboard with ML-powered demand forecasting and AI-generated alerts.
 
-**Live demo →** _add your Vercel URL here_
+**Live demo →** https://stock-pilot-ai-based-inventory-syst.vercel.app
 
 ---
 
