@@ -3,5 +3,6 @@ uvicorn==0.30.1
 pandas==2.2.2
 numpy==1.26.4
 scikit-learn==1.5.0
+statsmodels==0.14.6
 google-genai==2.8.0
 python-dotenv==1.0.1
