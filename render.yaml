@@ -6,13 +6,9 @@ services:
     buildCommand: pip install -r requirements.txt
     startCommand: uvicorn main:app --host 0.0.0.0 --port $PORT
     envVars:
-      - key: AZURE_OPENAI_KEY
+      - key: GOOGLE_API_KEY
         sync: false          # set manually in Render dashboard
-      - key: AZURE_OPENAI_ENDPOINT
-        sync: false
-      - key: AZURE_OPENAI_DEPLOYMENT
-        value: gpt-4o
-      - key: AZURE_OPENAI_API_VERSION
-        value: "2024-08-01-preview"
+      - key: GEMINI_MODEL
+        value: gemini-2.0-flash
       - key: FRONTEND_URL
         sync: false          # set to your Vercel URL after deploying frontend

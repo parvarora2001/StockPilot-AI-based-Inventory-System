@@ -1,4 +1,4 @@
-# InventoryAI
+# StockPilot
 
 A full-stack inventory management dashboard with ML-powered demand forecasting and AI-generated alerts.
 
@@ -10,7 +10,7 @@ A full-stack inventory management dashboard with ML-powered demand forecasting a
 
 - **Real-time inventory dashboard** — stock levels, days-of-stock, and reorder status for 10 products across 4 risk tiers (Critical / Warning / Overstock / Healthy)
 - **ML demand forecasting** — ensemble of linear regression + 14-day moving average with a confidence band; selectable horizon of 14, 30, 60, or 90 days
-- **AI alerts** — per-product plain-English recommendations powered by GPT-4o (via Azure OpenAI); falls back to template-based alerts in demo mode so the app is fully functional without an API key
+- **AI alerts** — per-product plain-English recommendations powered by Google Gemini; falls back to template-based alerts in demo mode so the app is fully functional without an API key
 - **Dark-mode UI** — built with React + Recharts, no CSS framework
 
 ## Tech stack
@@ -20,7 +20,7 @@ A full-stack inventory management dashboard with ML-powered demand forecasting a
 | Frontend  | React 18, Vite, Recharts |
 | Backend   | Python 3.12, FastAPI, Uvicorn |
 | ML        | scikit-learn (LinearRegression), NumPy, pandas |
-| AI        | Azure OpenAI (GPT-4o) |
+| AI        | Google Gemini (`gemini-2.0-flash`) |
 | Deploy    | Vercel (frontend) + Render (backend) |
 
 ---
@@ -35,7 +35,7 @@ A full-stack inventory management dashboard with ML-powered demand forecasting a
 
 ```bash
 cd backend
-cp .env.example .env          # fill in your Azure keys (optional)
+cp .env.example .env          # fill in your Google AI Studio key (optional)
 pip install -r requirements.txt
 uvicorn main:app --reload --port 8000
 ```
@@ -50,7 +50,7 @@ npm install
 npm run dev                   # starts on http://localhost:3000
 ```
 
-> The app works without an Azure OpenAI key — the Alerts tab uses template-based messages in that case.
+> The app works without a Google API key — the Alerts tab uses template-based messages in that case.
 
 ---
 
@@ -63,7 +63,7 @@ npm run dev                   # starts on http://localhost:3000
 3. Set **Root Directory** to `backend`
 4. Render auto-detects the `Procfile`; no build command needed beyond `pip install -r requirements.txt`
 5. Add environment variables in the Render dashboard (copy from `.env.example`)
-6. Copy the deployed URL (e.g. `https://inventory-ai-backend.onrender.com`)
+6. Copy the deployed URL (e.g. `https://stockpilot.onrender.com`)
 
 ### Frontend → Vercel
 
@@ -81,12 +81,12 @@ Back in Render, set the `FRONTEND_URL` env var to your Vercel URL so CORS is all
 ## Project structure
 
 ```
-inventory-ai-2/
+stockpilot/
 ├── backend/
 │   ├── main.py          # FastAPI app, routes, CORS, lifespan
 │   ├── data_loader.py   # CSV ingestion, inventory simulation
 │   ├── forecaster.py    # ML ensemble (LinearRegression + moving average)
-│   ├── ai_alerts.py     # GPT-4o alerts with demo fallback
+│   ├── ai_alerts.py     # Gemini alerts with demo fallback
 │   ├── sales_data.csv   # Synthetic sales history (10 products)
 │   ├── requirements.txt
 │   ├── Procfile         # Render start command

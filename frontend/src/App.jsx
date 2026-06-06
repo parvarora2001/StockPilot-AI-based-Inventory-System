@@ -421,7 +421,7 @@ function AlertsTab({ alerts, loading, onRun }) {
             )}
           </div>
           <p style={{ margin: 0, fontSize: 13, color: T.muted }}>
-            ML forecasting {isAiGenerated ? "+ GPT-4o analysis" : "(demo — add Azure key for GPT-4o)"} across all products
+            ML forecasting {isAiGenerated ? "+ Gemini analysis" : "(demo — add Google AI key for Gemini)"} across all products
           </p>
         </div>
         <button onClick={onRun} disabled={loading} style={{
@@ -446,7 +446,7 @@ function AlertsTab({ alerts, loading, onRun }) {
           </div>
           <div style={{ color: T.muted, fontSize: 13, lineHeight: 1.7 }}>
             Click <b style={{ color: T.amber }}>Run Analysis</b> to generate alerts for all 10 products.<br />
-            Works without an API key — add <code style={{ color: T.dim, fontSize: 12 }}>AZURE_OPENAI_KEY</code> to unlock GPT-4o messages.
+            Works without an API key — add <code style={{ color: T.dim, fontSize: 12 }}>GOOGLE_API_KEY</code> to unlock Gemini messages.
           </div>
         </Card>
       )}
@@ -603,7 +603,7 @@ export default function App() {
             justifyContent: "center", fontSize: 15,
           }}>◈</div>
           <span style={{ fontFamily: "'Syne',sans-serif", fontWeight: 800, fontSize: 16 }}>
-            InventoryAI
+            StockPilot
           </span>
           <Chip label="v1.0" color={T.muted} bg={T.border + "66"} />
         </div>

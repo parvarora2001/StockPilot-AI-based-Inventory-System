@@ -1,5 +1,5 @@
 def main():
-    print("Hello from inventory-ai-2!")
+    print("Hello from stockpilot!")
 
 
 if __name__ == "__main__":

@@ -21,15 +21,15 @@ logger = logging.getLogger(__name__)
 
 @asynccontextmanager
 async def lifespan(_app: FastAPI):
-    logger.info("Starting InventoryAI — warming CSV cache…")
+    logger.info("Starting StockPilot — warming CSV cache…")
     _load_csv()
     logger.info("Cache ready. Server is live.")
     yield
 
 
 app = FastAPI(
-    title="InventoryAI API",
-    description="Smart inventory forecasting powered by ML + GPT-4o",
+    title="StockPilot API",
+    description="Smart inventory forecasting powered by ML + Gemini",
     version="1.0.0",
     lifespan=lifespan,
 )
