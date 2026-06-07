@@ -19,7 +19,7 @@ A full-stack inventory management dashboard with ML-powered demand forecasting a
 |-----------|-----------|
 | Frontend  | React 18, Vite, Recharts |
 | Backend   | Python 3.12, FastAPI, Uvicorn |
-| ML        | scikit-learn (LinearRegression), NumPy, pandas |
+| ML        | statsmodels (Holt-Winters), NumPy, pandas |
 | AI        | Google Gemini (`gemini-2.0-flash`) |
 | Deploy    | Vercel (frontend) + Render (backend) |
 
@@ -85,7 +85,7 @@ stockpilot/
 ├── backend/
 │   ├── main.py          # FastAPI app, routes, CORS, lifespan
 │   ├── data_loader.py   # CSV ingestion, inventory simulation
-│   ├── forecaster.py    # ML ensemble (LinearRegression + moving average)
+│   ├── forecaster.py    # Holt-Winters forecasting + residual anomaly detection
 │   ├── ai_alerts.py     # Gemini alerts with demo fallback
 │   ├── sales_data.csv   # Synthetic sales history (10 products)
 │   ├── requirements.txt
